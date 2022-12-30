@@ -1,16 +1,14 @@
 const ethers = require("ethers");
 const fs = require("fs-extra");
+require("dotenv").config();
 
 async function main() {
   const provider = new ethers.providers.JsonRpcBatchProvider(
-    "http://127.0.0.1:7545"
+    process.env.RPC_URL
   );
 
   // it's an open source wallet private key, not best practice, but still
-  const wallet = new ethers.Wallet(
-    "f1522562fe9649d0c884cbdef64e977bb10293c23690808a2b2002d1c8c0e03f",
-    provider
-  );
+  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
   const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf8");
 
   const binary = fs.readFileSync(
