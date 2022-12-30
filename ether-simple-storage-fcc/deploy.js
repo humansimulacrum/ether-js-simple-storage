@@ -7,13 +7,8 @@ async function main() {
     process.env.RPC_URL
   );
 
-  const encryptedJson = fs.readFileSync("./encryptedKey.json");
-  let wallet = new ethers.Wallet.fromEncryptedJsonSync(
-    encryptedJson,
-    process.env.PRIVATE_KEY_PASSWORD
-  );
-  wallet = await wallet.connect(provider);
-
+  // it's an open source wallet private key, not best practice, but still
+  const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
   const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf8");
 
   const binary = fs.readFileSync(
@@ -26,6 +21,7 @@ async function main() {
 
   const contract = await contractFactory.deploy();
   await contract.deployTransaction.wait(1);
+  console.log(`Contract address: ${contract.address}`);
 
   const currentFavouriteNumber = await contract.retrieve();
   console.log(currentFavouriteNumber.toString());
